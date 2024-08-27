@@ -2,10 +2,20 @@
 from pytubefix import YouTube, exceptions
 import os 
 
-successfulConversion = False
+class EmptyFolderPathError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+class InvalidURLError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 def convert(urlEntered, folderPath):
     try:
+
+        if folderPath == "":
+            raise EmptyFolderPathError("Folder path is empty")
+
         # url input from user 
         yt = YouTube(urlEntered)
 
@@ -23,8 +33,6 @@ def convert(urlEntered, folderPath):
         # result of success 
         print(yt.title + " has been successfully downloaded.")
 
-        global successfulConversion
-        successfulConversion = True
-    except exceptions as err:
-        print("shit")
+    except exceptions.RegexMatchError as err:
+        raise InvalidURLError("URL is invalid")
 
