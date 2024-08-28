@@ -1,7 +1,5 @@
 import customtkinter as ctk
-import time
-from converter import convert, InvalidURLError, EmptyFolderPathError
-
+from converter import convert, InvalidURLError, EmptyFolderPathError, getVideoTitle
 
 # variables
 urlEntered = ""
@@ -9,9 +7,17 @@ folderPath = ""
 
 def urlFieldEntered(self):
     global urlEntered
+    global urlEnteredLabel
+    global videoTitleLabel
     urlEntered = urlField.get()
     urlField.delete(0, ctk.END)
-    urlField.insert(0, "URL Entered.")
+    urlEnteredLabel.pack_forget()
+    videoTitleLabel.pack_forget()
+    urlEnteredLabel = ctk.CTkLabel(videoInfoFrame, text="URL Entered: " + urlEntered, font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
+    videoTitleLabel = ctk.CTkLabel(videoInfoFrame, text="Video Title: " + getVideoTitle(urlEntered), font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
+    urlEnteredLabel.pack(padx=10, pady=(10, 10))
+    videoTitleLabel.pack(padx=10, pady=(10, 10))
+    
 
 def fileSelectPressed():
     global folderPath
@@ -23,23 +29,27 @@ def fileSelectPressed():
         print("No folder selected")
 
 def convertPressed():
-    global urlErrorLabel
-    global folderErrorLabel
-
     try:
         convert(urlEntered, folderPath)
     except InvalidURLError as error:
         print("invalid url error")
-        urlErrorLabel.pack(padx=10, pady=(10, 10))
-        root.after(3000, urlErrorLabel.pack_forget)
+        messageLabel.configure(text="Invalid URL given.", text_color="#FF0000")
+        messageLabel.pack(padx=10, pady=(10, 10))
+        root.after(3000, messageLabel.pack_forget)
     except EmptyFolderPathError as error:
         print("invalid filepath error")
-        folderErrorLabel.pack(padx=10, pady=(10, 10))
-        root.after(3000, folderErrorLabel.pack_forget)
+        messageLabel.configure(text="No folder selected.", text_color="#FF0000")
+        messageLabel.pack(padx=10, pady=(10, 10))
+        root.after(3000, messageLabel.pack_forget)
+    else:
+        print("successful conversion")
+        messageLabel.configure(text="Conversion successful! Check your output folder for your file.", text_color="#00FF00")
+        messageLabel.pack(padx=10, pady=(10, 10))
+        root.after(3000, messageLabel.pack_forget)
 
 
 root = ctk.CTk()
-root.geometry("750x500")
+root.geometry("800x600")
 root.title("YouTube to MP3 - Lukas")
 
 title_label = ctk.CTkLabel(root, text="Convert Your YouTube Video", font=ctk.CTkFont(size=26, weight="bold"))
@@ -49,6 +59,14 @@ urlField = ctk.CTkEntry(root, placeholder_text="Enter your URL", width=400)
 urlField.pack(padx=20, pady=(40, 40))
 urlField.bind("<Return>", urlFieldEntered)
 
+videoInfoFrame = ctk.CTkFrame(root)
+videoInfoFrame.pack(pady=20)
+
+urlEnteredLabel = ctk.CTkLabel(videoInfoFrame, text="URL Entered: (empty)", font=ctk.CTkFont(size=16, weight="bold"))
+urlEnteredLabel.pack(padx=10, pady=(10, 10))
+videoTitleLabel = ctk.CTkLabel(videoInfoFrame, text="Video Title: (empty)", font=ctk.CTkFont(size=16, weight="bold"))
+videoTitleLabel.pack(padx=10, pady=(10, 10))
+
 buttonFrame = ctk.CTkFrame(root)
 buttonFrame.pack(pady=20)
 
@@ -57,8 +75,7 @@ convert_button = ctk.CTkButton(buttonFrame, text="Convert", width=100, command=c
 outputDestButton.pack(side="left", padx=10, pady=20)
 convert_button.pack(side="left", padx=10, pady=20)
 
-folderErrorLabel = ctk.CTkLabel(root, text="No folder selected.", font=ctk.CTkFont(size=16, weight="bold"), text_color = "#FF0000")
-urlErrorLabel = ctk.CTkLabel(root, text="Invalid URL entered.", font=ctk.CTkFont(size=16, weight="bold"), text_color = "#FF0000")
+messageLabel = ctk.CTkLabel(root, font=ctk.CTkFont(size=16, weight="bold"))
 
 
 root.mainloop()
