@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from converter import convert, InvalidURLError, EmptyFolderPathError, getVideoTitle
 
-# variables
+# variables and stuff
 urlEntered = ""
 folderPath = ""
 
