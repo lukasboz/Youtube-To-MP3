@@ -4,7 +4,7 @@ This program uses pytube and CTkinter to download a video from YouTube and conve
 
 # How to use the Application:
 
-Double click the .exe to run on Windows.
+Clone repo and run main.py.
 
 Paste a URL into the text field and hit the enter key.
 
