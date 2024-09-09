@@ -6,17 +6,24 @@ urlEntered = ""
 folderPath = ""
 
 def urlFieldEntered(self):
-    global urlEntered
-    global urlEnteredLabel
-    global videoTitleLabel
-    urlEntered = urlField.get()
-    urlField.delete(0, ctk.END)
-    urlEnteredLabel.pack_forget()
-    videoTitleLabel.pack_forget()
-    urlEnteredLabel = ctk.CTkLabel(videoInfoFrame, text="URL Entered: " + urlEntered, font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
-    videoTitleLabel = ctk.CTkLabel(videoInfoFrame, text="Video Title: " + getVideoTitle(urlEntered), font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
-    urlEnteredLabel.pack(padx=10, pady=(10, 10))
-    videoTitleLabel.pack(padx=10, pady=(10, 10))
+    try:
+        global urlEntered
+        global urlEnteredLabel
+        global videoTitleLabel
+        urlEntered = urlField.get()
+        urlField.delete(0, ctk.END)
+        urlEnteredLabel.pack_forget()
+        videoTitleLabel.pack_forget()
+        urlEnteredLabel = ctk.CTkLabel(videoInfoFrame, text="URL Entered: " + urlEntered, font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
+        videoTitleLabel = ctk.CTkLabel(videoInfoFrame, text="Video Title: " + getVideoTitle(urlEntered), font=ctk.CTkFont(size=16, weight="bold"), text_color="#FFFFFF")
+    except InvalidURLError as error:
+        print("invalid url error")
+        messageLabel.configure(text="Invalid URL given.", text_color="#FF0000")
+        messageLabel.pack(padx=10, pady=(10, 10))
+        root.after(3000, messageLabel.pack_forget)
+    finally:
+        urlEnteredLabel.pack(padx=10, pady=(10, 10))
+        videoTitleLabel.pack(padx=10, pady=(10, 10))
     
 
 def fileSelectPressed():
