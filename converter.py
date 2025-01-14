@@ -24,7 +24,7 @@ def convert(urlEntered, folderPath):
             raise EmptyFolderPathError("Folder path is empty")
 
         # url input from user 
-        yt = YouTube(urlEntered, 'WEB_CREATOR')
+        yt = YouTube(urlEntered, "ANDROID_VR")
         vidTitle = yt.title
         print(vidTitle)
 
